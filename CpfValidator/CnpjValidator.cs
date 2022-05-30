@@ -81,6 +81,9 @@ public class CnpjValidator
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool ValidadorCnpjFast(string cnpj)
     {
+        if (!Avx2.IsSupported)
+            throw new PlatformNotSupportedException("Avx2 not supported");
+
         if (cnpj.Length < 14)
             return false;
 
@@ -135,7 +138,10 @@ public class CnpjValidator
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool ValidadorCnpjFast2(string cnpj)
     {
-        Span<short> cnpjPtr = stackalloc short[16];
+        if (!Vector.IsHardwareAccelerated || Vector<short>.Count != 16)
+            throw new PlatformNotSupportedException("Hardware accelaration not supported");
+
+        Span<short> cnpjPtr = stackalloc short[Vector<short>.Count];
 
         var str = MemoryMarshal.Cast<char, short>(cnpj.AsSpan());
         str.CopyTo(cnpjPtr);

@@ -63,6 +63,9 @@ public class CpfValidator
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool ValidadorCpfFast(string cpf)
     {
+        if (!Avx2.IsSupported)
+            throw new PlatformNotSupportedException("Avx2 not supported");
+
         if (cpf.Length != 11)
             return false;
 
@@ -110,7 +113,10 @@ public class CpfValidator
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool ValidadorCpfFast2(string cpf)
     {
-        Span<short> cpfPtr = stackalloc short[16];
+        if (!Vector.IsHardwareAccelerated || Vector<short>.Count != 16)
+            throw new PlatformNotSupportedException("Hardware accelaration not supported");
+
+        Span<short> cpfPtr = stackalloc short[Vector<short>.Count];
 
         var str = MemoryMarshal.Cast<char, short>(cpf.AsSpan());
         str.CopyTo(cpfPtr);
