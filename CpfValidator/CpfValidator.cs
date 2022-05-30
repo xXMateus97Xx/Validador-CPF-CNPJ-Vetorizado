@@ -1,7 +1,5 @@
 ﻿using BenchmarkDotNet.Attributes;
-using System.Numerics;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using System.Runtime.Intrinsics;
 using System.Runtime.Intrinsics.X86;
 
@@ -16,6 +14,12 @@ public class CpfValidator
             "52998224725", //Valid
             "52998224721", //Last Invalid
             "52998224715", //First Invalid
+            "12CABCABCAB",
+            "529982247AB",
+            "529982247+.",
+            "12.-...+./.",
+            "123",
+            "11111111111",
         };
     }
 
@@ -35,18 +39,30 @@ public class CpfValidator
         return ValidadorCpfFast(Cpf);
     }
 
-    [Benchmark]
-    public bool SimdVectorBenchmark()
-    {
-        return ValidadorCpfFast2(Cpf);
-    }
-
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool ValidadorCpf(string cpf)
     {
-        var sum = 0;
+        if (cpf.Length != 11)
+            return false;
 
-        for (int i = 0, j = 100; i < cpf.Length - 2; i++, j -= 10)
+        bool allEqual = true, allNumber = true;
+        int i, j, sum;
+        for (i = 0, j = 1; allEqual && allNumber && j < cpf.Length; i++, j++)
+        {
+            var c1 = cpf[i];
+            var c2 = cpf[j];
+            if (c1 != c2)
+                allEqual = false;
+            if (c1 < '0' || c1 > '9' || c2 < '0' || c2 > '9')
+                allNumber = false;
+        }
+
+        if (allEqual || !allNumber)
+            return false;
+
+        sum = 0;
+
+        for (i = 0, j = 100; i < cpf.Length - 2; i++, j -= 10)
             sum += (cpf[i] - '0') * j;
 
         if (sum % 11 != cpf[cpf.Length - 2] - '0')
@@ -54,7 +70,7 @@ public class CpfValidator
 
         sum = 0;
 
-        for (int i = 0, j = 110; i < cpf.Length - 1; i++, j -= 10)
+        for (i = 0, j = 110; i < cpf.Length - 1; i++, j -= 10)
             sum += (cpf[i] - '0') * j;
 
         return sum % 11 == cpf[cpf.Length - 1] - '0';
@@ -70,16 +86,39 @@ public class CpfValidator
             return false;
 
         var cpfVec = Vector256.Create(cpf[0], cpf[1], cpf[2], cpf[3], cpf[4], cpf[5], cpf[6], cpf[7], cpf[8], cpf[9], cpf[10], 0, 0, 0, 0, 0).AsInt16();
+        var charFilter = Avx2.ShiftRightLogical128BitLane(cpfVec, sizeof(short));
+        charFilter = charFilter.WithElement(7, cpfVec.GetElement(8));
+        charFilter = charFilter.WithElement(10, cpfVec.GetElement(10));
+        var comparerResult = Avx2.CompareEqual(cpfVec, charFilter);
 
-        var charFilter = Vector256.Create('0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', 0, 0, 0, 0, 0).AsInt16();
+        var mask = Avx2.MoveMask(comparerResult.AsByte());
+        if (mask == -1)
+            return false;
 
-        var zeros = Vector128<short>.Zero;
+        charFilter = Vector256.Create('9', '9', '9', '9', '9', '9', '9', '9', '9', '9', '9', 0, 0, 0, 0, 0).AsInt16();
 
-        var multipliers = Vector256.Create(100, 90, 80, 70, 60, 50, 40, 30, 20, 0, 0, 0, 0, 0, 0, 0);
+        comparerResult = Avx2.CompareGreaterThan(cpfVec, charFilter);
+
+        mask = Avx2.MoveMask(comparerResult.AsByte());
+        if (mask != 0)
+            return false;
+
+        const short z = (short)'0';
+        charFilter = Vector256.Create(z, z, z, z, z, z, z, z, z, z, z, -1, -1, -1, -1, -1).AsInt16();
+
+        comparerResult = Avx2.CompareGreaterThan(cpfVec, charFilter);
+
+        mask = Avx2.MoveMask(comparerResult.AsByte());
+        if (mask != -1)
+            return false;
 
         var nums = Avx2.Subtract(cpfVec, charFilter);
 
+        var multipliers = Vector256.Create(100, 90, 80, 70, 60, 50, 40, 30, 20, 0, 0, 0, 0, 0, 0, 0);
+
         var multiply = Avx2.MultiplyLow(nums, multipliers);
+
+        var zeros = Vector128<short>.Zero;
 
         var r = Ssse3.HorizontalAdd(multiply.GetLower(), multiply.GetUpper());
         r = Ssse3.HorizontalAdd(r, zeros);
@@ -103,45 +142,5 @@ public class CpfValidator
         sum = r.ToScalar();
 
         return sum % 11 == nums.GetElement(10);
-    }
-
-    const short ZeroChar = (short)'0';
-    private static readonly short[] CharFilter = new short[] { ZeroChar, ZeroChar, ZeroChar, ZeroChar, ZeroChar, ZeroChar, ZeroChar, ZeroChar, ZeroChar, ZeroChar, ZeroChar, 0, 0, 0, 0, 0 };
-    private static readonly short[] Multipliers1 = new short[] { 100, 90, 80, 70, 60, 50, 40, 30, 20, 0, 0, 0, 0, 0, 0, 0 };
-    private static readonly short[] Multipliers2 = new short[] { 110, 100, 90, 80, 70, 60, 50, 40, 30, 20, 0, 0, 0, 0, 0, 0 };
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool ValidadorCpfFast2(string cpf)
-    {
-        if (!Vector.IsHardwareAccelerated || Vector<short>.Count != 16)
-            throw new PlatformNotSupportedException("Hardware accelaration not supported");
-
-        Span<short> cpfPtr = stackalloc short[Vector<short>.Count];
-
-        var str = MemoryMarshal.Cast<char, short>(cpf.AsSpan());
-        str.CopyTo(cpfPtr);
-
-        var vec = new Vector<short>(cpfPtr);
-
-        var charFilter = new Vector<short>(CharFilter);
-
-        var multipliers = new Vector<short>(Multipliers1);
-
-        var nums = vec - charFilter;
-
-        var multiply = nums * multipliers;
-
-        var sum = Vector.Sum(multiply);
-
-        if (sum % 11 != nums[9])
-            return false;
-
-        multipliers = new Vector<short>(Multipliers2);
-
-        multiply = nums * multipliers;
-
-        sum = Vector.Sum(multiply);
-
-        return sum % 11 == nums[10];
     }
 }
