@@ -63,14 +63,10 @@ public class CpfValidator
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool ValidadorCpfFast(string cpf)
     {
-        Span<short> cpfPtr = stackalloc short[16];
+        if (cpf.Length != 11)
+            return false;
 
-        var str = MemoryMarshal.Cast<char, short>(cpf.AsSpan());
-        str.CopyTo(cpfPtr);
-
-        var vec = new Vector<short>(cpfPtr);
-
-        var cpfVec = vec.AsVector256();
+        var cpfVec = Vector256.Create(cpf[0], cpf[1], cpf[2], cpf[3], cpf[4], cpf[5], cpf[6], cpf[7], cpf[8], cpf[9], cpf[10], 0, 0, 0, 0, 0).AsInt16();
 
         var charFilter = Vector256.Create('0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', 0, 0, 0, 0, 0).AsInt16();
 

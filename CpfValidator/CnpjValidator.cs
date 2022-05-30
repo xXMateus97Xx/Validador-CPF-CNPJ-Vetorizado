@@ -81,14 +81,11 @@ public class CnpjValidator
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool ValidadorCnpjFast(string cnpj)
     {
-        Span<short> cnpjPtr = stackalloc short[16];
+        if (cnpj.Length < 14)
+            return false;
 
-        var str = MemoryMarshal.Cast<char, short>(cnpj.AsSpan());
-        str.CopyTo(cnpjPtr);
-
-        var vec = new Vector<short>(cnpjPtr);
-
-        var cpfVec = vec.AsVector256();
+        var cpfVec = Vector256.Create(cnpj[0], cnpj[1], cnpj[2], cnpj[3], cnpj[4], cnpj[5], cnpj[6], cnpj[7],
+                                      cnpj[8], cnpj[9], cnpj[10], cnpj[11], cnpj[12], cnpj[13], 0, 0).AsInt16();
 
         var charFilter = Vector256.Create('0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', 0, 0).AsInt16();
 
