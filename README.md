@@ -55,22 +55,22 @@ AMD Ryzen 5 3600, 1 CPU, 12 logical and 6 physical cores
 ```
 |          Method |           Cnpj |       Mean |     Error |    StdDev |
 |---------------- |--------------- |-----------:|----------:|----------:|
-| **ScalarBenchmark** | **11444777000101** |  **8.5167 ns** | **0.0041 ns** | **0.0032 ns** |
-|   SimdBenchmark | 11444777000101 |  6.2884 ns | 0.0114 ns | 0.0107 ns |
-| **ScalarBenchmark** | **11444777000161** | **17.9328 ns** | **0.0047 ns** | **0.0039 ns** |
-|   SimdBenchmark | 11444777000161 |  8.2461 ns | 0.0084 ns | 0.0070 ns |
-| **ScalarBenchmark** | **11444777000165** | **18.0171 ns** | **0.0208 ns** | **0.0162 ns** |
-|   SimdBenchmark | 11444777000165 |  8.2844 ns | 0.0154 ns | 0.0144 ns |
-| **ScalarBenchmark** | **21./+...++/...** |  **8.4377 ns** | **0.0132 ns** | **0.0111 ns** |
-|   SimdBenchmark | 21./+...++/... |  2.7177 ns | 0.0031 ns | 0.0026 ns |
-| **ScalarBenchmark** | **214657898456.+** |  **8.5554 ns** | **0.0037 ns** | **0.0031 ns** |
-|   SimdBenchmark | 214657898456.+ |  2.8779 ns | 0.0023 ns | 0.0019 ns |
-| **ScalarBenchmark** | **214657898456LH** |  **8.5672 ns** | **0.0070 ns** | **0.0054 ns** |
-|   SimdBenchmark | 214657898456LH |  2.6197 ns | 0.0057 ns | 0.0050 ns |
-| **ScalarBenchmark** | **21ABCDFERGEsdf** |  **8.5765 ns** | **0.0116 ns** | **0.0103 ns** |
-|   SimdBenchmark | 21ABCDFERGEsdf |  2.6156 ns | 0.0042 ns | 0.0035 ns |
-| **ScalarBenchmark** |            **321** |  **0.4653 ns** | **0.0013 ns** | **0.0012 ns** |
-|   SimdBenchmark |            321 |  0.2380 ns | 0.0009 ns | 0.0007 ns |
+| **ScalarBenchmark** | **11444777000101** | **16.9780 ns** | **0.1704 ns** | **0.1594 ns** |
+|   SimdBenchmark | 11444777000101 |  6.0525 ns | 0.0071 ns | 0.0067 ns |
+| **ScalarBenchmark** | **11444777000161** | **26.5910 ns** | **0.1867 ns** | **0.1747 ns** |
+|   SimdBenchmark | 11444777000161 |  8.2820 ns | 0.0097 ns | 0.0076 ns |
+| **ScalarBenchmark** | **11444777000165** | **26.4659 ns** | **0.0258 ns** | **0.0229 ns** |
+|   SimdBenchmark | 11444777000165 |  8.2897 ns | 0.0234 ns | 0.0219 ns |
+| **ScalarBenchmark** | **21./+...++/...** |  **2.8657 ns** | **0.0440 ns** | **0.0412 ns** |
+|   SimdBenchmark | 21./+...++/... |  2.7306 ns | 0.0050 ns | 0.0046 ns |
+| **ScalarBenchmark** | **214657898456.+** |  **8.8697 ns** | **0.0980 ns** | **0.0916 ns** |
+|   SimdBenchmark | 214657898456.+ |  2.8886 ns | 0.0068 ns | 0.0063 ns |
+| **ScalarBenchmark** | **214657898456LH** |  **8.5899 ns** | **0.1417 ns** | **0.1256 ns** |
+|   SimdBenchmark | 214657898456LH |  2.6268 ns | 0.0076 ns | 0.0067 ns |
+| **ScalarBenchmark** | **21ABCDFERGEsdf** |  **2.7215 ns** | **0.0674 ns** | **0.0597 ns** |
+|   SimdBenchmark | 21ABCDFERGEsdf |  2.6164 ns | 0.0155 ns | 0.0145 ns |
+| **ScalarBenchmark** |            **321** |  **0.4685 ns** | **0.0097 ns** | **0.0086 ns** |
+|   SimdBenchmark |            321 |  0.2702 ns | 0.0043 ns | 0.0034 ns |
 
 11444777000161 é um CNPJ válido
 
