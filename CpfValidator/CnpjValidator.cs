@@ -44,9 +44,21 @@ public class CnpjValidator
         if (cnpj == null || cnpj.Length != 14)
             return false;
 
-        var sum = 0;
-        int i = 0;
-        int j = 5;
+        var allNumber = true;
+        int i, j, sum;
+        for (i = 0; allNumber && i < cnpj.Length; i++)
+        {
+            var c1 = cnpj[i];
+            if (c1 < '0' || c1 > '9')
+                allNumber = false;
+        }
+
+        if (!allNumber)
+            return false;
+
+        sum = 0;
+        i = 0;
+        j = 5;
         for (; i < 4; i++, j--)
             sum += (cnpj[i] - '0') * j;
 
