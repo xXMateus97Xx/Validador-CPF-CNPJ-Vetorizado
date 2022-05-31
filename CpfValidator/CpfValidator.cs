@@ -42,7 +42,7 @@ public class CpfValidator
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool ValidadorCpf(string cpf)
     {
-        if (cpf.Length != 11)
+        if (cpf == null || cpf.Length != 11)
             return false;
 
         bool allEqual = true, allNumber = true;
@@ -82,7 +82,7 @@ public class CpfValidator
         if (!Avx2.IsSupported)
             throw new PlatformNotSupportedException("Avx2 not supported");
 
-        if (cpf.Length != 11)
+        if (cpf == null || cpf.Length != 11)
             return false;
 
         var cpfVec = Vector256.Create(cpf[0], cpf[1], cpf[2], cpf[3], cpf[4], cpf[5], cpf[6], cpf[7], cpf[8], cpf[9], cpf[10], 0, 0, 0, 0, 0).AsInt16();
@@ -103,7 +103,7 @@ public class CpfValidator
         if (mask != 0)
             return false;
 
-        const short z = (short)'0';
+        const short z = (short)'0' - 1;
         charFilter = Vector256.Create(z, z, z, z, z, z, z, z, z, z, z, -1, -1, -1, -1, -1).AsInt16();
 
         comparerResult = Avx2.CompareGreaterThan(cpfVec, charFilter);
@@ -111,6 +111,8 @@ public class CpfValidator
         mask = Avx2.MoveMask(comparerResult.AsByte());
         if (mask != -1)
             return false;
+
+        charFilter = Vector256.Create('0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', 0, 0, 0, 0, 0).AsInt16();
 
         var nums = Avx2.Subtract(cpfVec, charFilter);
 

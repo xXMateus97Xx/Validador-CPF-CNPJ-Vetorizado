@@ -1,7 +1,5 @@
 ﻿using BenchmarkDotNet.Attributes;
-using System.Numerics;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using System.Runtime.Intrinsics;
 using System.Runtime.Intrinsics.X86;
 
@@ -16,6 +14,11 @@ public class CnpjValidator
             "11444777000161", //Valid
             "11444777000165", //Last Invalid
             "11444777000101", //First Invalid
+            "321",
+            "21ABCDFERGEsdf",
+            "21./+...++/...",
+            "214657898456.+",
+            "214657898456LH",
         };
     }
 
@@ -35,15 +38,12 @@ public class CnpjValidator
         return ValidadorCnpjFast(Cnpj);
     }
 
-    [Benchmark]
-    public bool SimdVectorBenchmark()
-    {
-        return ValidadorCnpjFast2(Cnpj);
-    }
-
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool ValidadorCnpj(string cnpj)
     {
+        if (cnpj == null || cnpj.Length != 14)
+            return false;
+
         var sum = 0;
         int i = 0;
         int j = 5;
@@ -84,17 +84,34 @@ public class CnpjValidator
         if (!Avx2.IsSupported)
             throw new PlatformNotSupportedException("Avx2 not supported");
 
-        if (cnpj.Length < 14)
+        if (cnpj == null || cnpj.Length != 14)
             return false;
 
         var cpfVec = Vector256.Create(cnpj[0], cnpj[1], cnpj[2], cnpj[3], cnpj[4], cnpj[5], cnpj[6], cnpj[7],
                                       cnpj[8], cnpj[9], cnpj[10], cnpj[11], cnpj[12], cnpj[13], 0, 0).AsInt16();
 
-        var charFilter = Vector256.Create('0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', 0, 0).AsInt16();
+        var charFilter = Vector256.Create('9', '9', '9', '9', '9', '9', '9', '9', '9', '9', '9', '9', '9', '9', 0, 0).AsInt16();
+
+        var comparerResult = Avx2.CompareGreaterThan(cpfVec, charFilter);
+
+        var mask = Avx2.MoveMask(comparerResult.AsByte());
+        if (mask != 0)
+            return false;
+
+        const short z = (short)'0' - 1;
+        charFilter = Vector256.Create(z, z, z, z, z, z, z, z, z, z, z, z, z, z, -1, -1).AsInt16();
+
+        comparerResult = Avx2.CompareGreaterThan(cpfVec, charFilter);
+
+        mask = Avx2.MoveMask(comparerResult.AsByte());
+        if (mask != -1)
+            return false;
 
         var zeros = Vector128<short>.Zero;
 
         var multipliers = Vector256.Create(5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2, 0, 0, 0, 0);
+
+        charFilter = Vector256.Create('0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', 0, 0).AsInt16();
 
         var nums = Avx2.Subtract(cpfVec, charFilter);
 
@@ -128,51 +145,5 @@ public class CnpjValidator
         mod = mod < 2 ? 0 : 11 - mod;
 
         return mod == nums.GetElement(13);
-    }
-
-    const short ZeroChar = (short)'0';
-    private static readonly short[] CharFilter = new short[] { ZeroChar, ZeroChar, ZeroChar, ZeroChar, ZeroChar, ZeroChar, ZeroChar, ZeroChar, ZeroChar, ZeroChar, ZeroChar, ZeroChar, ZeroChar, ZeroChar, 0, 0 };
-    private static readonly short[] Multipliers1 = new short[] { 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2, 0, 0, 0, 0 };
-    private static readonly short[] Multipliers2 = new short[] { 6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2, 0, 0, 0 };
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool ValidadorCnpjFast2(string cnpj)
-    {
-        if (!Vector.IsHardwareAccelerated || Vector<short>.Count != 16)
-            throw new PlatformNotSupportedException("Hardware accelaration not supported");
-
-        Span<short> cnpjPtr = stackalloc short[Vector<short>.Count];
-
-        var str = MemoryMarshal.Cast<char, short>(cnpj.AsSpan());
-        str.CopyTo(cnpjPtr);
-
-        var vec = new Vector<short>(cnpjPtr);
-
-        var charFilter = new Vector<short>(CharFilter);
-
-        var multipliers = new Vector<short>(Multipliers1);
-
-        var nums = vec - charFilter;
-
-        var multiply = nums * multipliers;
-
-        var sum = Vector.Sum(multiply);
-
-        var mod = sum % 11;
-        mod = mod < 2 ? 0 : 11 - mod;
-
-        if (mod != nums[12])
-            return false;
-
-        multipliers = new Vector<short>(Multipliers2);
-
-        multiply = nums * multipliers;
-
-        sum = Vector.Sum(multiply);
-
-        mod = sum % 11;
-        mod = mod < 2 ? 0 : 11 - mod;
-
-        return mod == nums[13];
     }
 }
