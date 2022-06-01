@@ -57,14 +57,10 @@ public class CnpjValidator
             return false;
 
         sum = 0;
-        i = 0;
-        j = 5;
-        for (; i < 4; i++, j--)
+        for (i = 0, j = 5; i < 4; i++, j--)
             sum += (cnpj[i] - '0') * j;
 
-        j = 9;
-
-        for (; i < cnpj.Length - 2; i++, j--)
+        for (j = 9; i < cnpj.Length - 2; i++, j--)
             sum += (cnpj[i] - '0') * j;
 
         var mod = sum % 11;
@@ -73,15 +69,11 @@ public class CnpjValidator
         if (mod != cnpj[cnpj.Length - 2] - '0')
             return false;
 
-        i = 0;
-        j = 6;
         sum = 0;
-        for (; i < 5; i++, j--)
+        for (i = 0, j = 6; i < 5; i++, j--)
             sum += (cnpj[i] - '0') * j;
 
-        j = 9;
-
-        for (; i < cnpj.Length - 1; i++, j--)
+        for (j = 9; i < cnpj.Length - 1; i++, j--)
             sum += (cnpj[i] - '0') * j;
 
         mod = sum % 11;
