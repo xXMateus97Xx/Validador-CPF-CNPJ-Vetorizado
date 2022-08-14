@@ -16,30 +16,30 @@ AMD Ryzen 5 3600, 1 CPU, 12 logical and 6 physical cores
 ```
 |          Method |         Cpf |       Mean |     Error |    StdDev |
 |---------------- |------------ |-----------:|----------:|----------:|
-| **ScalarBenchmark** | **11111111111** | **12.2788 ns** | **0.1627 ns** | **0.1522 ns** |
-|   SimdBenchmark | 11111111111 |  4.0253 ns | 0.0082 ns | 0.0076 ns |
-| **ScalarBenchmark** | **12.-...+./.** |  **8.0388 ns** | **0.0063 ns** | **0.0053 ns** |
-|   SimdBenchmark | 12.-...+./. |  4.6106 ns | 0.0041 ns | 0.0039 ns |
-| **ScalarBenchmark** |         **123** |  **0.5976 ns** | **0.0010 ns** | **0.0009 ns** |
-|   SimdBenchmark |         123 |  0.2309 ns | 0.0009 ns | 0.0007 ns |
-| **ScalarBenchmark** | **12CABCABCAB** |  **8.0657 ns** | **0.0148 ns** | **0.0131 ns** |
-|   SimdBenchmark | 12CABCABCAB |  4.2983 ns | 0.0024 ns | 0.0023 ns |
-| **ScalarBenchmark** | **529982247+.** |  **8.0620 ns** | **0.0063 ns** | **0.0056 ns** |
-|   SimdBenchmark | 529982247+. |  4.5280 ns | 0.0023 ns | 0.0018 ns |
-| **ScalarBenchmark** | **52998224715** |  **8.0887 ns** | **0.0687 ns** | **0.0574 ns** |
-|   SimdBenchmark | 52998224715 |  7.1959 ns | 0.0159 ns | 0.0141 ns |
-| **ScalarBenchmark** | **52998224721** | **15.2807 ns** | **0.0120 ns** | **0.0094 ns** |
-|   SimdBenchmark | 52998224721 |  9.7119 ns | 0.0112 ns | 0.0094 ns |
-| **ScalarBenchmark** | **52998224725** | **15.2820 ns** | **0.0097 ns** | **0.0086 ns** |
-|   SimdBenchmark | 52998224725 |  9.6975 ns | 0.0057 ns | 0.0051 ns |
-| **ScalarBenchmark** | **529982247AB** |  **8.0649 ns** | **0.0091 ns** | **0.0076 ns** |
-|   SimdBenchmark | 529982247AB |  4.3026 ns | 0.0022 ns | 0.0021 ns |
+| **ScalarBenchmark** | **11111111111** | **12.1232 ns** | **0.0568 ns** | **0.0503 ns** |
+|   SimdBenchmark | 11111111111 |  4.0264 ns | 0.0060 ns | 0.0050 ns |
+| **ScalarBenchmark** | **12.-...+./.** |  **8.2147 ns** | **0.0169 ns** | **0.0149 ns** |
+|   SimdBenchmark | 12.-...+./. |  4.5436 ns | 0.0211 ns | 0.0198 ns |
+| **ScalarBenchmark** |         **123** |  **0.6122 ns** | **0.0028 ns** | **0.0025 ns** |
+|   SimdBenchmark |         123 |  0.4724 ns | 0.0020 ns | 0.0018 ns |
+| **ScalarBenchmark** | **12CABCABCAB** |  **8.1860 ns** | **0.0112 ns** | **0.0099 ns** |
+|   SimdBenchmark | 12CABCABCAB |  4.2979 ns | 0.0108 ns | 0.0101 ns |
+| **ScalarBenchmark** | **529982247+.** |  **8.2161 ns** | **0.0353 ns** | **0.0330 ns** |
+|   SimdBenchmark | 529982247+. |  4.5369 ns | 0.0103 ns | 0.0091 ns |
+| **ScalarBenchmark** | **52998224715** |  **8.3093 ns** | **0.0711 ns** | **0.0555 ns** |
+|   SimdBenchmark | 52998224715 |  6.8496 ns | 0.0658 ns | 0.0615 ns |
+| **ScalarBenchmark** | **52998224721** | **15.5790 ns** | **0.1482 ns** | **0.1313 ns** |
+|   SimdBenchmark | 52998224721 |  9.8622 ns | 0.0534 ns | 0.0474 ns |
+| **ScalarBenchmark** | **52998224725** | **15.6126 ns** | **0.1619 ns** | **0.1514 ns** |
+|   SimdBenchmark | 52998224725 |  9.8357 ns | 0.0241 ns | 0.0214 ns |
+| **ScalarBenchmark** | **529982247AB** |  **8.2452 ns** | **0.0289 ns** | **0.0241 ns** |
+|   SimdBenchmark | 529982247AB |  4.3122 ns | 0.0062 ns | 0.0052 ns |
 
 52998224725 é um CPF válido
 
 52998224715 possui o 1º dígito verificador inválido
 
-52998224721 possui o 2º dpigito verificador inválido
+52998224721 possui o 2º dígito verificador inválido
 
 # Benchmark validação CNPJ
 

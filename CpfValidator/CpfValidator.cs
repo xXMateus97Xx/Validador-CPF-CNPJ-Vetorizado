@@ -65,7 +65,11 @@ public class CpfValidator
         for (i = 0, j = 100; i < cpf.Length - 2; i++, j -= 10)
             sum += (cpf[i] - '0') * j;
 
-        if (sum % 11 != cpf[cpf.Length - 2] - '0')
+        sum %= 11;
+        if (sum == 10)
+            sum = 0;
+
+        if (sum != cpf[cpf.Length - 2] - '0')
             return false;
 
         sum = 0;
@@ -73,7 +77,11 @@ public class CpfValidator
         for (i = 0, j = 110; i < cpf.Length - 1; i++, j -= 10)
             sum += (cpf[i] - '0') * j;
 
-        return sum % 11 == cpf[cpf.Length - 1] - '0';
+        sum %= 11;
+        if (sum == 10)
+            sum = 0;
+
+        return sum == cpf[cpf.Length - 1] - '0';
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -129,7 +137,11 @@ public class CpfValidator
 
         var sum = r.ToScalar();
 
-        if (sum % 11 != nums.GetElement(9))
+        sum %= 11;
+        if (sum == 10)
+            sum = 0;
+
+        if (sum != nums.GetElement(9))
             return false;
 
         multipliers = Vector256.Create(110, 100, 90, 80, 70, 60, 50, 40, 30, 20, 0, 0, 0, 0, 0, 0);
@@ -143,6 +155,10 @@ public class CpfValidator
 
         sum = r.ToScalar();
 
-        return sum % 11 == nums.GetElement(10);
+        sum %= 11;
+        if (sum == 10)
+            sum = 0;
+
+        return sum == nums.GetElement(10);
     }
 }
