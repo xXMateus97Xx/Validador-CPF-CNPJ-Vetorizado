@@ -38,6 +38,12 @@ public class CnpjValidator
         return ValidadorCnpjFast(Cnpj);
     }
 
+    [Benchmark]
+    public bool SimdBenchmarkNewApi()
+    {
+        return ValidadorCnpjFast(Cnpj);
+    }
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool ValidadorCnpj(string cnpj)
     {
@@ -144,6 +150,60 @@ public class CnpjValidator
         r = Ssse3.HorizontalAdd(r, zeros);
 
         sum = r.ToScalar();
+
+        mod = sum % 11;
+        mod = mod < 2 ? 0 : 11 - mod;
+
+        return mod == nums.GetElement(13);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool ValidadorCnpjFastNewApi(string cnpj)
+    {
+        if (!Vector256.IsHardwareAccelerated)
+            throw new PlatformNotSupportedException("Vec256 not supported");
+
+        if (cnpj == null || cnpj.Length != 14)
+            return false;
+
+        var cpfVec = Vector256.Create(cnpj[0], cnpj[1], cnpj[2], cnpj[3], cnpj[4], cnpj[5], cnpj[6], cnpj[7],
+                                     cnpj[8], cnpj[9], cnpj[10], cnpj[11], cnpj[12], cnpj[13], 0, 0).AsInt16();
+
+        var charFilter = Vector256.Create("9\09\09\09\09\09\09\09\09\09\09\09\09\09\0\0\0\0\0"u8).AsInt16();
+
+        var comparerResult = Vector256.GreaterThanAny(cpfVec, charFilter);
+
+        if (comparerResult)
+            return false;
+
+        charFilter = Vector256.Create("0\00\00\00\00\00\00\00\00\00\00\00\00\00\0\0\0\0\0"u8).AsInt16();
+
+        comparerResult = Vector256.LessThanAny(cpfVec, charFilter);
+
+        if (comparerResult)
+            return false;
+
+        var zeros = Vector128<short>.Zero;
+
+        var multipliers = Vector256.Create(5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2, 0, 0, 0, 0);
+
+        var nums = cpfVec - charFilter;
+
+        var multiply = nums * multipliers;
+
+        var sum = Vector256.Sum(multiply);
+
+        var mod = sum % 11;
+        mod = mod < 2 ? 0 : 11 - mod;
+
+        if (mod != nums.GetElement(12))
+            return false;
+
+        multipliers = Vector256.Create(6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2, 0, 0, 0);
+
+        multiply = nums * multipliers;
+
+        sum = Vector256.Sum(multiply);
 
         mod = sum % 11;
         mod = mod < 2 ? 0 : 11 - mod;

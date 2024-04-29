@@ -39,6 +39,12 @@ public class CpfValidator
         return ValidadorCpfFast(Cpf);
     }
 
+    [Benchmark]
+    public bool SimdBenchmarkNewApi()
+    {
+        return ValidadorCpfFastNewApi(Cpf);
+    }
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static bool ValidadorCpf(string cpf)
     {
@@ -154,6 +160,64 @@ public class CpfValidator
         r = Ssse3.HorizontalAdd(r, zeros);
 
         sum = r.ToScalar();
+
+        sum %= 11;
+        if (sum == 10)
+            sum = 0;
+
+        return sum == nums.GetElement(10);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool ValidadorCpfFastNewApi(string cpf)
+    {
+        if (!Avx2.IsSupported)
+            throw new PlatformNotSupportedException("Avx2 not supported");
+
+        if (cpf == null || cpf.Length != 11)
+            return false;
+
+        var cpfVec = Vector256.Create(cpf[0], cpf[1], cpf[2], cpf[3], cpf[4], cpf[5], cpf[6], cpf[7], cpf[8], cpf[9], cpf[10], 0, 0, 0, 0, 0).AsInt16();
+
+        var charFilter = Avx2.ShiftRightLogical128BitLane(cpfVec, sizeof(short));
+        charFilter = charFilter.WithElement(7, cpfVec.GetElement(8));
+        charFilter = charFilter.WithElement(10, cpfVec.GetElement(10));
+
+        if (cpfVec == charFilter)
+            return false;
+
+        charFilter = Vector256.Create("9\09\09\09\09\09\09\09\09\09\09\0\0\0\0\0\0\0\0\0\0\0"u8).AsInt16();
+
+        if (Vector256.GreaterThanAny(cpfVec, charFilter))
+            return false;
+
+        charFilter = Vector256.Create("0\00\00\00\00\00\00\00\00\00\00\0\0\0\0\0\0\0\0\0\0\0"u8).AsInt16();
+
+        if (Vector256.LessThanAny(cpfVec, charFilter))
+            return false;
+
+        var nums = cpfVec - charFilter;
+
+        var multipliers = Vector256.Create(100, 90, 80, 70, 60, 50, 40, 30, 20, 0, 0, 0, 0, 0, 0, 0);
+
+        var multiply = nums * multipliers;
+
+        var zeros = Vector128<short>.Zero;
+
+        var sum = Vector256.Sum(multiply);
+
+        sum %= 11;
+        if (sum == 10)
+            sum = 0;
+
+        if (sum != nums.GetElement(9))
+            return false;
+
+        multipliers = Vector256.Create(110, 100, 90, 80, 70, 60, 50, 40, 30, 20, 0, 0, 0, 0, 0, 0);
+
+        multiply = nums * multipliers;
+
+        sum = Vector256.Sum(multiply);
 
         sum %= 11;
         if (sum == 10)
