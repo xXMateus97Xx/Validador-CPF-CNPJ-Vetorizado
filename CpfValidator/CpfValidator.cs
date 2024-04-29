@@ -202,8 +202,6 @@ public class CpfValidator
 
         var multiply = nums * multipliers;
 
-        var zeros = Vector128<short>.Zero;
-
         var sum = Vector256.Sum(multiply);
 
         sum %= 11;

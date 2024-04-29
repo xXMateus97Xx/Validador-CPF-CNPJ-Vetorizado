@@ -183,8 +183,6 @@ public class CnpjValidator
         if (comparerResult)
             return false;
 
-        var zeros = Vector128<short>.Zero;
-
         var multipliers = Vector256.Create(5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2, 0, 0, 0, 0);
 
         var nums = cpfVec - charFilter;
