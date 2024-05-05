@@ -186,12 +186,15 @@ public class CpfValidator
         if (cpfVec == charFilter)
             return false;
 
-        charFilter = Vector256.Create("9\09\09\09\09\09\09\09\09\09\09\0\0\0\0\0\0\0\0\0\0\0"u8).AsInt16();
+        const short min = (short)'0';
+        const short max = (short)'9';
+
+        charFilter = Vector256.Create(max, max, max, max, max, max, max, max, max, max, max, 0, 0, 0, 0, 0);
 
         if (Vector256.GreaterThanAny(cpfVec, charFilter))
             return false;
 
-        charFilter = Vector256.Create("0\00\00\00\00\00\00\00\00\00\00\0\0\0\0\0\0\0\0\0\0\0"u8).AsInt16();
+        charFilter = Vector256.Create(min, min, min, min, min, min, min, min, min, min, min, 0, 0, 0, 0, 0);
 
         if (Vector256.LessThanAny(cpfVec, charFilter))
             return false;

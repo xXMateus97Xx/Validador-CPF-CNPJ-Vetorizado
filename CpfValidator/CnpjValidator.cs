@@ -97,12 +97,12 @@ public class CnpjValidator
         if (cnpj == null || cnpj.Length != 14)
             return false;
 
-        var cpfVec = Vector256.Create(cnpj[0], cnpj[1], cnpj[2], cnpj[3], cnpj[4], cnpj[5], cnpj[6], cnpj[7],
+        var cnpjVec = Vector256.Create(cnpj[0], cnpj[1], cnpj[2], cnpj[3], cnpj[4], cnpj[5], cnpj[6], cnpj[7],
                                       cnpj[8], cnpj[9], cnpj[10], cnpj[11], cnpj[12], cnpj[13], 0, 0).AsInt16();
 
         var charFilter = Vector256.Create('9', '9', '9', '9', '9', '9', '9', '9', '9', '9', '9', '9', '9', '9', 0, 0).AsInt16();
 
-        var comparerResult = Avx2.CompareGreaterThan(cpfVec, charFilter);
+        var comparerResult = Avx2.CompareGreaterThan(cnpjVec, charFilter);
 
         var mask = Avx2.MoveMask(comparerResult.AsByte());
         if (mask != 0)
@@ -111,7 +111,7 @@ public class CnpjValidator
         const short z = (short)'0' - 1;
         charFilter = Vector256.Create(z, z, z, z, z, z, z, z, z, z, z, z, z, z, -1, -1).AsInt16();
 
-        comparerResult = Avx2.CompareGreaterThan(cpfVec, charFilter);
+        comparerResult = Avx2.CompareGreaterThan(cnpjVec, charFilter);
 
         mask = Avx2.MoveMask(comparerResult.AsByte());
         if (mask != -1)
@@ -123,7 +123,7 @@ public class CnpjValidator
 
         charFilter = Vector256.Create('0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', 0, 0).AsInt16();
 
-        var nums = Avx2.Subtract(cpfVec, charFilter);
+        var nums = Avx2.Subtract(cnpjVec, charFilter);
 
         var multiply = Avx2.MultiplyLow(nums, multipliers);
 
@@ -166,26 +166,29 @@ public class CnpjValidator
         if (cnpj == null || cnpj.Length != 14)
             return false;
 
-        var cpfVec = Vector256.Create(cnpj[0], cnpj[1], cnpj[2], cnpj[3], cnpj[4], cnpj[5], cnpj[6], cnpj[7],
+        var cnpjVec = Vector256.Create(cnpj[0], cnpj[1], cnpj[2], cnpj[3], cnpj[4], cnpj[5], cnpj[6], cnpj[7],
                                      cnpj[8], cnpj[9], cnpj[10], cnpj[11], cnpj[12], cnpj[13], 0, 0).AsInt16();
 
-        var charFilter = Vector256.Create("9\09\09\09\09\09\09\09\09\09\09\09\09\09\0\0\0\0\0"u8).AsInt16();
+        const short min = (short)'0';
+        const short max = (short)'9';
 
-        var comparerResult = Vector256.GreaterThanAny(cpfVec, charFilter);
+        var charFilter = Vector256.Create(max, max, max, max, max, max, max, max, max, max, max, max, max, max, 0, 0);
+
+        var comparerResult = Vector256.GreaterThanAny(cnpjVec, charFilter);
 
         if (comparerResult)
             return false;
 
-        charFilter = Vector256.Create("0\00\00\00\00\00\00\00\00\00\00\00\00\00\0\0\0\0\0"u8).AsInt16();
+        charFilter = Vector256.Create(min, min, min, min, min, min, min, min, min, min, min, min, min, min, 0, 0);
 
-        comparerResult = Vector256.LessThanAny(cpfVec, charFilter);
+        comparerResult = Vector256.LessThanAny(cnpjVec, charFilter);
 
         if (comparerResult)
             return false;
 
         var multipliers = Vector256.Create(5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2, 0, 0, 0, 0);
 
-        var nums = cpfVec - charFilter;
+        var nums = cnpjVec - charFilter;
 
         var multiply = nums * multipliers;
 
