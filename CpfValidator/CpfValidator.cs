@@ -9,8 +9,8 @@ public class CpfValidator
 {
     public CpfValidator()
     {
-        Cpfs = new string[]
-        {
+        Cpfs =
+        [
             "52998224725", //Valid
             "52998224721", //Last Invalid
             "52998224715", //First Invalid
@@ -20,7 +20,7 @@ public class CpfValidator
             "12.-...+./.",
             "123",
             "11111111111",
-        };
+        ];
     }
 
     [ParamsSource(nameof(Cpfs))]

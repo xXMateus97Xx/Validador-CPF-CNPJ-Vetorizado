@@ -9,8 +9,8 @@ public class CnpjValidator
 {
     public CnpjValidator()
     {
-        Cnpjs = new string[]
-        {
+        Cnpjs =
+        [
             "11444777000161", //Valid
             "11444777000165", //Last Invalid
             "11444777000101", //First Invalid
@@ -19,7 +19,7 @@ public class CnpjValidator
             "21./+...++/...",
             "214657898456.+",
             "214657898456LH",
-        };
+        ];
     }
 
     [ParamsSource(nameof(Cnpjs))]
