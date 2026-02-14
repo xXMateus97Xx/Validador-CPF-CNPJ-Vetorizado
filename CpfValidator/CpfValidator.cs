@@ -51,19 +51,19 @@ public class CpfValidator
         if (cpf == null || cpf.Length != 11)
             return false;
 
-        bool allEqual = true, allNumber = true;
+        var allEqual = true;
         int i, j, sum;
-        for (i = 0, j = 1; allEqual && allNumber && j < cpf.Length; i++, j++)
+        for (i = 0, j = 1; allEqual && j < cpf.Length; i++, j++)
         {
             var c1 = cpf[i];
             var c2 = cpf[j];
             if (c1 != c2)
                 allEqual = false;
             if (c1 < '0' || c1 > '9' || c2 < '0' || c2 > '9')
-                allNumber = false;
+                return false;
         }
 
-        if (allEqual || !allNumber)
+        if (allEqual)
             return false;
 
         sum = 0;

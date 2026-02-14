@@ -9,6 +9,8 @@ public class Program
         Console.WriteLine(CpfValidator.ValidadorCpfFastNewApi("52998224725"));
         Console.WriteLine(CnpjValidator.ValidadorCnpjFast("11444777000161"));
         Console.WriteLine(CnpjValidator.ValidadorCnpjFastNewApi("11444777000161"));
+        Console.WriteLine(CnpjValidator.ValidadorCnpjFast("29ZXCHB7000175"));
+        Console.WriteLine(CnpjValidator.ValidadorCnpjFastNewApi("29ZXCHB7000175"));
 #else
         BenchmarkDotNet.Running.BenchmarkSwitcher.FromTypes([typeof(CpfValidator), typeof(CnpjValidator)]).Run();
 #endif

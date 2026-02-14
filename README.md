@@ -54,43 +54,52 @@ AMD Ryzen 5 3600, 1 CPU, 12 logical and 6 physical cores
 
 ```
 
-BenchmarkDotNet v0.13.12, Windows 11 (10.0.22631.3447/23H2/2023Update/SunValley3)
-AMD Ryzen 5 3600, 1 CPU, 12 logical and 6 physical cores
-.NET SDK 8.0.202
-  [Host]     : .NET 8.0.3 (8.0.324.11423), X64 RyuJIT AVX2
-  DefaultJob : .NET 8.0.3 (8.0.324.11423), X64 RyuJIT AVX2
+BenchmarkDotNet v0.15.6, Windows 11 (10.0.26200.7840)
+AMD Ryzen 5 3600 3.59GHz, 1 CPU, 12 logical and 6 physical cores
+.NET SDK 10.0.103
+  [Host]     : .NET 10.0.3 (10.0.3, 10.0.326.7603), X64 RyuJIT x86-64-v3
+  DefaultJob : .NET 10.0.3 (10.0.3, 10.0.326.7603), X64 RyuJIT x86-64-v3
 
 
 ```
 | Method              | Cnpj           | Mean       | Error     | StdDev    |
 |-------------------- |--------------- |-----------:|----------:|----------:|
-| **ScalarBenchmark**     | **11444777000101** | **15.2186 ns** | **0.2116 ns** | **0.1979 ns** |
-| SimdBenchmark       | 11444777000101 |  6.2986 ns | 0.0265 ns | 0.0248 ns |
-| SimdBenchmarkNewApi | 11444777000101 |  6.3187 ns | 0.0237 ns | 0.0221 ns |
-| **ScalarBenchmark**     | **11444777000161** | **23.9060 ns** | **0.1136 ns** | **0.1063 ns** |
-| SimdBenchmark       | 11444777000161 |  8.7168 ns | 0.0163 ns | 0.0153 ns |
-| SimdBenchmarkNewApi | 11444777000161 |  8.7205 ns | 0.0156 ns | 0.0138 ns |
-| **ScalarBenchmark**     | **11444777000165** | **23.9006 ns** | **0.0770 ns** | **0.0683 ns** |
-| SimdBenchmark       | 11444777000165 |  8.7007 ns | 0.0353 ns | 0.0330 ns |
-| SimdBenchmarkNewApi | 11444777000165 |  8.7110 ns | 0.0276 ns | 0.0258 ns |
-| **ScalarBenchmark**     | **21./+...++/...** |  **2.6684 ns** | **0.0438 ns** | **0.0409 ns** |
-| SimdBenchmark       | 21./+...++/... |  2.8441 ns | 0.0134 ns | 0.0126 ns |
-| SimdBenchmarkNewApi | 21./+...++/... |  2.9228 ns | 0.0356 ns | 0.0297 ns |
-| **ScalarBenchmark**     | **214657898456.+** |  **7.9028 ns** | **0.0301 ns** | **0.0282 ns** |
-| SimdBenchmark       | 214657898456.+ |  2.8303 ns | 0.0138 ns | 0.0129 ns |
-| SimdBenchmarkNewApi | 214657898456.+ |  2.8730 ns | 0.0112 ns | 0.0104 ns |
-| **ScalarBenchmark**     | **214657898456LH** |  **9.7942 ns** | **0.1618 ns** | **0.1513 ns** |
-| SimdBenchmark       | 214657898456LH |  2.7782 ns | 0.0078 ns | 0.0065 ns |
-| SimdBenchmarkNewApi | 214657898456LH |  2.8014 ns | 0.0119 ns | 0.0111 ns |
-| **ScalarBenchmark**     | **21ABCDFERGEsdf** |  **3.3375 ns** | **0.0149 ns** | **0.0125 ns** |
-| SimdBenchmark       | 21ABCDFERGEsdf |  2.7973 ns | 0.0103 ns | 0.0096 ns |
-| SimdBenchmarkNewApi | 21ABCDFERGEsdf |  2.8004 ns | 0.0105 ns | 0.0098 ns |
-| **ScalarBenchmark**     | **321**            |  **0.0109 ns** | **0.0037 ns** | **0.0034 ns** |
-| SimdBenchmark       | 321            |  0.2792 ns | 0.0189 ns | 0.0168 ns |
-| SimdBenchmarkNewApi | 321            |  0.2569 ns | 0.0313 ns | 0.0262 ns |
+| **ScalarBenchmark**     | **11444777000101** | **14.8630 ns** | **0.0170 ns** | **0.0142 ns** |
+| SimdBenchmark       | 11444777000101 |  5.8854 ns | 0.0074 ns | 0.0069 ns |
+| SimdBenchmarkNewApi | 11444777000101 |  5.8880 ns | 0.0062 ns | 0.0058 ns |
+| **ScalarBenchmark**     | **11444777000161** | **23.0970 ns** | **0.0284 ns** | **0.0222 ns** |
+| SimdBenchmark       | 11444777000161 |  8.8741 ns | 0.0100 ns | 0.0089 ns |
+| SimdBenchmarkNewApi | 11444777000161 |  8.8733 ns | 0.0059 ns | 0.0052 ns |
+| **ScalarBenchmark**     | **11444777000165** | **22.8371 ns** | **0.0236 ns** | **0.0221 ns** |
+| SimdBenchmark       | 11444777000165 |  8.8757 ns | 0.0092 ns | 0.0086 ns |
+| SimdBenchmarkNewApi | 11444777000165 |  8.8789 ns | 0.0122 ns | 0.0114 ns |
+| **ScalarBenchmark**     | **21./+...++/...** |  **1.6488 ns** | **0.0035 ns** | **0.0031 ns** |
+| SimdBenchmark       | 21./+...++/... |  2.9104 ns | 0.0036 ns | 0.0033 ns |
+| SimdBenchmarkNewApi | 21./+...++/... |  3.0365 ns | 0.0236 ns | 0.0221 ns |
+| **ScalarBenchmark**     | **214657898456.+** |  **7.4003 ns** | **0.0420 ns** | **0.0393 ns** |
+| SimdBenchmark       | 214657898456.+ |  2.9452 ns | 0.0052 ns | 0.0049 ns |
+| SimdBenchmarkNewApi | 214657898456.+ |  2.9452 ns | 0.0044 ns | 0.0039 ns |
+| **ScalarBenchmark**     | **214657898456LH** | **15.5847 ns** | **0.1082 ns** | **0.1012 ns** |
+| SimdBenchmark       | 214657898456LH |  2.5583 ns | 0.0070 ns | 0.0065 ns |
+| SimdBenchmarkNewApi | 214657898456LH |  2.5616 ns | 0.0070 ns | 0.0065 ns |
+| **ScalarBenchmark**     | **21ABCDFERGEsdf** |  **7.1287 ns** | **0.0286 ns** | **0.0239 ns** |
+| SimdBenchmark       | 21ABCDFERGEsdf |  2.5660 ns | 0.0025 ns | 0.0021 ns |
+| SimdBenchmarkNewApi | 21ABCDFERGEsdf |  2.5662 ns | 0.0042 ns | 0.0037 ns |
+| **ScalarBenchmark**     | **29ZXCHB7000135** | **15.8101 ns** | **0.3454 ns** | **0.3231 ns** |
+| SimdBenchmark       | 29ZXCHB7000135 |  5.8912 ns | 0.0181 ns | 0.0170 ns |
+| SimdBenchmarkNewApi | 29ZXCHB7000135 |  5.8874 ns | 0.0131 ns | 0.0122 ns |
+| **ScalarBenchmark**     | **29ZXCHB7000175** | **24.0046 ns** | **0.0729 ns** | **0.0682 ns** |
+| SimdBenchmark       | 29ZXCHB7000175 |  8.8712 ns | 0.0086 ns | 0.0077 ns |
+| SimdBenchmarkNewApi | 29ZXCHB7000175 |  8.8788 ns | 0.0112 ns | 0.0104 ns |
+| **ScalarBenchmark**     | **29ZXCHB7000179** | **23.9195 ns** | **0.0678 ns** | **0.0634 ns** |
+| SimdBenchmark       | 29ZXCHB7000179 |  8.8793 ns | 0.0115 ns | 0.0108 ns |
+| SimdBenchmarkNewApi | 29ZXCHB7000179 |  8.8716 ns | 0.0091 ns | 0.0081 ns |
+| **ScalarBenchmark**     | **321**            |  **0.0089 ns** | **0.0016 ns** | **0.0014 ns** |
+| SimdBenchmark       | 321            |  0.0108 ns | 0.0014 ns | 0.0013 ns |
+| SimdBenchmarkNewApi | 321            |  0.0796 ns | 0.0014 ns | 0.0013 ns |
 
-11444777000161 é um CNPJ válido
+11444777000161 e 29ZXCHB7000175 são CNPJs válidos
 
-11444777000101 possui o 1º dígito verificador inválido
+11444777000101 e 29ZXCHB7000135 possuem o 1º dígito verificador inválido
 
-11444777000165 possui o 2º dígito verificador inválido
+11444777000165 e 29ZXCHB7000179 possuem o 2º dígito verificador inválido
